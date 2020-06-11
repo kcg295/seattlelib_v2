@@ -517,7 +517,7 @@ class ThreadPool (object):
       def noop():
         pass
 
-      for n in xrange(noop_tasks):
+      for n in range(noop_tasks):
         self.add_task(noop)
 
 

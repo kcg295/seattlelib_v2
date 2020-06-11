@@ -1051,13 +1051,13 @@ class MultiplexerSocket():
     
     
     
-  def recv(self,bytes,blocking=False):
+  def recv(self,some_bytes,blocking=False):
     """
     <Purpose>
       To read data from the socket. This operation will block until some data is available. It will not block if some, non "bytes" amount is available. 
     
     <Arguments>
-      bytes:
+      some_bytes:
         Read up to "bytes" input. Positive integer.
     
       blocking
@@ -1070,7 +1070,7 @@ class MultiplexerSocket():
       A string with length up to bytes
     """
     # Check input sanity
-    if bytes <= 0:
+    if some_bytes <= 0:
       raise ValueError, "Must read a positive integer number of bytes!"
         
     # Check if the socket is closed
@@ -1092,11 +1092,11 @@ class MultiplexerSocket():
     self.socketLocks["recv"].acquire()
   
     # Read up to bytes
-    data = self.buffer[:bytes] 
+    data = self.buffer[:some_bytes] 
     amountIn = len(data)
     
     # Remove what we read from the buffer
-    self.buffer = self.buffer[bytes:] 
+    self.buffer = self.buffer[some_bytes:] 
   
     # Reduce amount of incoming data available
     self.bufferInfo["incoming"] -= amountIn
@@ -1127,9 +1127,9 @@ class MultiplexerSocket():
     self.socketLocks["recv"].release() 
     
     # Are we supposed to block?
-    if blocking and amountIn < bytes:
+    if blocking and amountIn < some_bytes:
       # How much more do we need?
-      more = bytes - amountIn
+      more = some_bytes - amountIn
       
       # Try to recieve the extra, recursively call ourself
       moreData = self.recv(more, True)

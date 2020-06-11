@@ -69,9 +69,9 @@ def base64_b64encode(s, altchars=None):
     base64_alphabet = BASE64_ALPHABET[:62] + altchars
 
   # Change from characters to integers for binary operations.
-  bytes = []
+  some_bytes = []
   for x in s:
-    bytes.append(ord(x))
+    some_bytes.append(ord(x))
 
   # Encode the 8-bit words into 6-bit words.
   x6bit_words = []
@@ -80,7 +80,7 @@ def base64_b64encode(s, altchars=None):
 
     # Encode the first 6 bits from three 8-bit values.
     try:
-      x8bits = bytes[index]
+      x8bits = some_bytes[index]
     except IndexError:
       break
     else:
@@ -90,7 +90,7 @@ def base64_b64encode(s, altchars=None):
 
     # Encode the next 8 bits.
     try:
-      x8bits = bytes[index + 1]
+      x8bits = some_bytes[index + 1]
     except IndexError:
       x6bits = leftover_bits << 4
       x6bit_words.extend([base64_alphabet[x6bits], "=="])
@@ -102,7 +102,7 @@ def base64_b64encode(s, altchars=None):
 
     # Encode the final 8 bits.
     try:
-      x8bits = bytes[index + 2]
+      x8bits = some_bytes[index + 2]
     except IndexError:
       x6bits = leftover_bits << 2
       x6bit_words.extend([base64_alphabet[x6bits], "="])
@@ -153,7 +153,7 @@ def base64_b64decode(s, altchars=None):
 
   # Generate the translation maps for decoding a Base64 string.
   translate_chars = []
-  for x in xrange(256):
+  for x in range(256):
     char = chr(x)
     translate_chars.append(char)
 
@@ -199,11 +199,11 @@ def base64_b64decode(s, altchars=None):
   x6bit_words = []
   for x in s:
     x6bit_words.append(ord(x))
-  for x in xrange(align):
+  for x in range(align):
     x6bit_words.append(-1)
 
   # Decode the 6-bit words into 8-bit words.
-  bytes = []
+  some_bytes = []
   index = 0
   while True:
 
@@ -215,26 +215,26 @@ def base64_b64decode(s, altchars=None):
       break
 
     # Save an 8-bit quantity.
-    bytes.append((x6bits1 << 2) | (x6bits2 >> 4))
+    some_bytes.append((x6bits1 << 2) | (x6bits2 >> 4))
 
     # End of valid data.
     if x6bits3 < 0:
       break
 
     # Save an 8-bit quantity.
-    bytes.append(((x6bits2 & 15) << 4) | (x6bits3 >> 2))
+    some_bytes.append(((x6bits2 & 15) << 4) | (x6bits3 >> 2))
 
     # End of valid data.
     if x6bits4 < 0:
       break
 
     # Save an 8-bit quantity.
-    bytes.append(((x6bits3 & 3) << 6) | x6bits4)
+    some_bytes.append(((x6bits3 & 3) << 6) | x6bits4)
 
     # Next four 6-bit quantities.
     index += 4
 
-  return "".join([chr(x) for x in bytes])
+  return "".join([chr(x) for x in some_bytes])
 
 def base64_standard_b64encode(s):
   """

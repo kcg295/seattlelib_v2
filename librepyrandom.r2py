@@ -26,19 +26,19 @@ _RANDOM_DATA_LOCK = createlock()
 # This method utilizes and replenishes the cached
 # random data, and should be used instead of directly
 # accessing the cache.
-def _get_randombytes(bytes):
+def _get_randombytes(some_bytes):
   # Get the lock
   _RANDOM_DATA_LOCK.acquire(True)
   try:
     # Check if we have enough data and get more
-    while len(_RANDOM_DATA[0]) < bytes:
+    while len(_RANDOM_DATA[0]) < some_bytes:
       _RANDOM_DATA[0] += randombytes()
 
     # Take off the amount we need
-    data = _RANDOM_DATA[0][:bytes]
+    data = _RANDOM_DATA[0][:some_bytes]
 
     # Strip that data from the store
-    _RANDOM_DATA[0] = _RANDOM_DATA[0][bytes:]
+    _RANDOM_DATA[0] = _RANDOM_DATA[0][some_bytes:]
 
     # Return the random data
     return data
@@ -49,9 +49,9 @@ def _get_randombytes(bytes):
 
 # Converts some number of random bytes into a number
 # Treats random data as an unsigned long.
-def _get_randomint(bytes):
+def _get_randomint(some_bytes):
   # Get enough random data
-  data = _get_randombytes(bytes)
+  data = _get_randombytes(some_bytes)
 
   # Store the number
   num = 0L
@@ -83,13 +83,13 @@ def randomfloat():
   return num * (2**(-64))
 
 
-def randomstring(bytes=4):
+def randomstring(some_bytes=4):
   """Returns some number of random bytes as a string."""
-  if type(bytes) is not int:
+  if type(some_bytes) is not int:
     raise TypeError("Bytes must be given as an integer!")
-  if bytes <= 0:
+  if some_bytes <= 0:
     raise ValueError("Bytes must be a positive integer!")
 
-  return _get_randombytes(bytes)
+  return _get_randombytes(some_bytes)
 
 

@@ -247,7 +247,7 @@ def serialize_deserializedata(datastr):
       raise ValueError("Malformed Dict string '"+restofstring+"'")
     
     thisdict = {}
-    for position in xrange(len(keys)):
+    for position in range(len(keys)):
       thisdict[keys[position]] = values[position]
     
     return thisdict

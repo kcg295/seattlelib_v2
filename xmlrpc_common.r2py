@@ -325,7 +325,7 @@ def _xmlrpc_common_value2xml(obj):
   elif object_type in (str, unicode, basestring):
     xml_string.append("<string>%s</string>" % obj)
 
-  elif object_type in (list, tuple, xrange, set, frozenset):
+  elif object_type in (list, tuple, range, set, frozenset):
     xml_string.append("<array><data>")
     for value in obj:
       xml_string.append(_xmlrpc_common_value2xml(value))

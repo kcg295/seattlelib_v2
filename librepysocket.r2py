@@ -972,7 +972,7 @@ class RepySocket (object):
     return (self.localip, self.localport)
 
 
-  def _recv(self, bytes, timeout):
+  def _recv(self, some_bytes, timeout):
     """
     Private recv method.
     Semantics like recv.
@@ -981,8 +981,8 @@ class RepySocket (object):
     # Check if we have any data in the buffer
     data = ""
     if len(self.recv_buffer) > 0:
-      data = self.recv_buffer[:bytes]
-      self.recv_buffer = self.recv_buffer[bytes:]
+      data = self.recv_buffer[:some_bytes]
+      self.recv_buffer = self.recv_buffer[some_bytes:]
       return data
 
     # Get the start time
@@ -992,13 +992,13 @@ class RepySocket (object):
     while True:
       try:
         # Recv at least _MIN_SOCK_RECV
-        extra = self.sock.recv(max(bytes, _MIN_SOCK_RECV))
+        extra = self.sock.recv(max(some_bytes, _MIN_SOCK_RECV))
     
         # Add what is needed to data for the user
-        data += extra[:bytes]
+        data += extra[:some_bytes]
 
         # Add the rest to the buffer
-        extra = extra[bytes:]
+        extra = extra[some_bytes:]
         if extra != "":
           self.recv_buffer += extra
 
@@ -1021,7 +1021,7 @@ class RepySocket (object):
 
 
 
-  def recv(self, bytes):
+  def recv(self, some_bytes):
     """
     <Purpose>
       Recv's some data from the socket.
@@ -1041,7 +1041,7 @@ class RepySocket (object):
     self.recv_lock.acquire(True)
     try:
       # Use the timeout value for the socket
-      return self._recv(bytes, self.timeout)
+      return self._recv(some_bytes, self.timeout)
     finally:
       self.recv_lock.release()
 
@@ -1109,7 +1109,7 @@ class RepySocket (object):
       self.send_lock.release()
 
 
-  def recvall(self, bytes):
+  def recvall(self, some_bytes):
     """
     <Purpose>
       Recv's a specific amount of data from the socket.
@@ -1133,7 +1133,7 @@ class RepySocket (object):
       data = ""
 
       # Loop until we have all the data
-      needed = bytes
+      needed = some_bytes
       while needed > 0:
         # recv with no timeout, break if we get
         # an exception

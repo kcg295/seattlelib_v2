@@ -7,6 +7,7 @@ Description:
   definition and executes the next layer within a secure context.
 """
 
+
 # Copy our clean context for importing
 CLEAN_CONTEXT = _context.copy()
 CLEAN_CONTEXT["_context"] = CLEAN_CONTEXT
@@ -15,8 +16,7 @@ CLEAN_CONTEXT["mycontext"] = {}
 # These are the calls that are initially copied to form
 # INIT_DEFINITION
 #
-COPIED_API = ["gethostbyname", "getmyip", "sendmessage", "listenformessage",
-             "openconnection", "listenforconnection", "openfile", "listfiles",
+COPIED_API = ["openfile", "listfiles",
              "removefile", "exitall", "createlock", "getruntime", "randombytes",
              "createthread", "sleep", "log", "getthreadname", "createvirtualnamespace",
              "getresources", "getlasterror",]
@@ -72,9 +72,13 @@ def _layer_code(layer):
   try:
     fileh = openfile(layer, False)
   except FileNotFoundError:
-    raise FileNotFoundError, "Cannot load security layer '"+layer+"'. File not found."
+    raise FileNotFoundError("Cannot load security layer '"+layer+"'. File not found.")
   except ResourceExhaustedError:
-    raise FileNotFoundError, "Cannot load security layer '"+layer+"'. No file resources."
+    raise FileNotFoundError("Cannot load security layer '"+layer+"'. No file resources.")
+  except Exception as e:
+    raise Exception("The fuck? " + str(e))
+  if fileh is None:
+    raise Exception("Kek.")
 
   # Read in the code
   code = fileh.readat(MAX_FILE_SIZE, 0)
@@ -85,8 +89,8 @@ def _layer_code(layer):
   # Create a new virtual namespace
   try:
     virt = createvirtualnamespace(code,layer)
-  except CodeUnsafeError, e:
-    raise CodeUnsafeError, "Compiling security layer '"+layer+"' failed! Got exception: '" + str(e) + "'"
+  except CodeUnsafeError as e:
+    raise CodeUnsafeError("Compiling security layer '"+layer+"' failed! Got exception: '" + str(e) + "'")
   
   # Return the new namespace
   return virt

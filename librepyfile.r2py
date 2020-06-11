@@ -482,15 +482,15 @@ class RepyFile (object):
 
   # Private read method. The cursor_lock should be
   # held prior to calling this method.
-  def _read(self, bytes=None):
+  def _read(self, some_bytes=None):
     # Check the mode
     if "r" not in self.mode:
       raise RepyArgumentError("File opened as write-only! Cannot read!")
 
     # Check the bytes argument
-    if bytes is not None and type(bytes) is not int:
+    if some_bytes is not None and type(some_bytes) is not int:
       raise TypeError("Bytes argument must be an integer or 'None'!")
-    if bytes is not None and bytes < 0:
+    if some_bytes is not None and some_bytes < 0:
       raise ValueError("Bytes must be a non-negative integer!")
 
     # Store a copy of the cursor
@@ -501,9 +501,9 @@ class RepyFile (object):
     start_offset = cursor % 4096
     
     end_block = None
-    if bytes is not None:
-      end_block = (cursor + bytes) / 4096
-      end_offset = (cursor + bytes) % 4096
+    if some_bytes is not None:
+      end_block = (cursor + some_bytes) / 4096
+      end_offset = (cursor + some_bytes) % 4096
 
     # Read the data in one block at a time
     data = ""
@@ -532,18 +532,18 @@ class RepyFile (object):
     return data
 
 
-  def read(self, bytes=None):
+  def read(self, some_bytes=None):
     """
     <Purpose>
       Reads a given number of bytes or until the EOF is reached.
 
     <Arguments>
-      bytes: The maximum number of bytes to read. None for unlimited.
+      some_bytes: The maximum number of bytes to read. None for unlimited.
 
     <Exceptions>
       Raises RepyArgumentError if the file is opened in write only mode.
-      Raises TypeError if bytes is not an int
-      Raises ValueError if the number of bytes is negative
+      Raises TypeError if some_bytes is not an int
+      Raises ValueError if the number of some_bytes is negative
 
     <Returns>
       The data read as a string.
@@ -552,7 +552,7 @@ class RepyFile (object):
     self.cursor_lock.acquire(True)
 
     try:
-      return self._read(bytes)
+      return self._read(some_bytes)
     
     finally:
       # Release the cursor lock
@@ -647,9 +647,9 @@ class RepyFile (object):
       start_block = cursor / 4096
       start_offset = cursor % 4096
       
-      bytes = len(data)
-      end_block = (cursor + bytes) / 4096
-      end_offset = (cursor + bytes) % 4096
+      some_bytes = len(data)
+      end_block = (cursor + some_bytes) / 4096
+      end_offset = (cursor + some_bytes) % 4096
 
       # If we are writing a whole block, then we are okay.
       # If we are writing a partial block, we need to read in
@@ -671,7 +671,7 @@ class RepyFile (object):
         current_block += 1
         
       # Move the cursor
-      self.cursor = cursor + bytes
+      self.cursor = cursor + some_bytes
 
     finally:
       # Release the cursor lock

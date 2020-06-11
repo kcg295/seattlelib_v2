@@ -58,7 +58,7 @@ CLASS_TYPE = type(_noop)
 
 # These are the types that are not copied, but are just returned as the same
 # instance. These should all be immutable.
-NON_COPIED_TYPES = set((str, unicode, int, long, float, complex, bool,
+NON_COPIED_TYPES = set((str, int, float, complex, bool,
                     frozenset, NONE_TYPE, FUNC_TYPE, METHOD_TYPE,
                     INSTANCE_TYPE, CLASS_TYPE))
 
@@ -200,7 +200,7 @@ def _wrap_function(name, func, definition, obj_attribute=False):
     # Call the function
     try:
       retval = func(*copied_args)
-    except Exception, e:
+    except Exception as e:
       # Check the exception
       _check_func_exception(name, excp_defin, e)
 
@@ -440,7 +440,7 @@ def _check_func_args(name, arg_definition, args):
   if min_args > num_args or num_args > defined_length and not has_var_args:
     raise RepyArgumentError("Function '"+name+"' expects at least "+str(min_args)+" arguments, "+str(num_args)+" provided.")
 
-  for index in xrange(num_args):
+  for index in range(num_args):
     # If we get into the var-args, then stop processing
     # the arguments, since they are all allowed.
     if index >= defined_length-1 and has_var_args:

@@ -73,7 +73,7 @@ class timeout_socket():
 
 
   # Provide a recv() implementation
-  def recv(self,bytes,timeout=None):
+  def recv(self,some_bytes,timeout=None):
     """
     <Purpose>
       Allows receiving data from the socket object with a custom timeout.
@@ -105,7 +105,7 @@ class timeout_socket():
 
     while elapsed_time < timeout:
       try:
-        data = self.socket.recv(bytes)
+        data = self.socket.recv(some_bytes)
       except SocketWouldBlockError:
         sleep(self.checkintv)
         elapsed_time = getruntime() - starttime
