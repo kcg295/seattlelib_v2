@@ -76,7 +76,7 @@ def _layer_code(layer):
   except ResourceExhaustedError:
     raise FileNotFoundError("Cannot load security layer '"+layer+"'. No file resources.")
   except Exception as e:
-    raise Exception("The fuck? " + str(e))
+    raise Exception(str(e))
   if fileh is None:
     raise Exception("Kek.")
 
